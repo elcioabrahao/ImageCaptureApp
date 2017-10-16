@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,7 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+
+import com.mukesh.image_processing.ImageProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements ImageInputHelper.
 
     private ImageInputHelper imageInputHelper;
     private ImageView imagem1;
+    private Button btn1;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
 
     @Override
@@ -40,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements ImageInputHelper.
         imageInputHelper.setImageActionListener(this);
 
         imagem1=(ImageView)findViewById(R.id.imagem1);
+        btn1 = (Button)findViewById(R.id.bt1);
     }
 
     @Override
@@ -129,10 +137,68 @@ public class MainActivity extends AppCompatActivity implements ImageInputHelper.
         imageInputHelper.requestCropImage(uri, 400, 300, 4, 3);
     }
 
+    public void onRadioButtonClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        ImageProcessor imageProcessor = new ImageProcessor();
+
+        BitmapDrawable drawable = (BitmapDrawable) imagem1.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+
+        switch (view.getId()) {
+            case R.id.radio01:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.doInvert(bitmap));
+                break;
+            case R.id.radio02:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.doGreyScale(bitmap));
+                break;
+            case R.id.radio03:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.applyGaussianBlur(bitmap));
+                break;
+            case R.id.radio04:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.createShadow(bitmap));
+                break;
+            case R.id.radio05:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.applyMeanRemoval(bitmap));
+                break;
+            case R.id.radio06:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.emboss(bitmap));
+                break;
+            case R.id.radio07:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.engrave(bitmap));
+                break;
+            case R.id.radio08:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.applyFleaEffect(bitmap));
+                break;
+            case R.id.radio09:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.applyBlackFilter(bitmap));
+                break;
+            case R.id.radio10:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.applySnowEffect(bitmap));
+                break;
+            case R.id.radio11:
+                if (checked)
+                    imagem1.setImageBitmap(imageProcessor.applyReflection(bitmap));
+                break;
+            default :
+                break;
+        }
+    }
+
     @Override
     public void onImageCropped(Uri uri, File imageFile) {
         try {
-
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
             imagem1.setImageBitmap(bitmap);
 
